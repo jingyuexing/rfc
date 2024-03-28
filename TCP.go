@@ -25,6 +25,7 @@ type TCP struct {
 func (tcp TCP) ToBytes() []byte{
 	mask4 := (1 << 4) - 1
 	mask6 := (1 << 6) - 1
+	mask8 := (1 << 8) - 1
 
 	result := make([]byte,0)
 
@@ -37,7 +38,7 @@ func (tcp TCP) ToBytes() []byte{
 
 	var cache uint
 
-	cache = cache | uint(tcp.Offset)
+	cache = cache | uint(tcp.Offset) & uint(mask4)
 	cache = (cache << 4) | uint(tcp.Reserved) & uint(mask6)
 	ControlBits := boolToInt(tcp.FIN) | (boolToInt(tcp.SYN) << 1) | (boolToInt(tcp.RST) << 2) | (boolToInt(tcp.PSH) << 3) | (boolToInt(tcp.ACK) << 4) | (boolToInt(tcp.URG) << 5)
 	cache = cache | uint(tcp.Offset) & uint(mask4)
@@ -48,12 +49,12 @@ func (tcp TCP) ToBytes() []byte{
 	cache = 0
 	result = Fill(result,uint(tcp.CheckSum))
 	result = Fill(result,uint(tcp.UrgentPointer))
-	result = Fill(result,(uint(tcp.Options) << 8) | uint(tcp.Padding))
+	result = Fill(result,(uint(tcp.Options) << 8) | uint(tcp.Padding) & uint(mask8))
 	result = append(result, tcp.payload...)
 	return result
 
 }
 
-func (tcp TCP) SetData(data []byte){
+func (tcp TCP) SetData(data ...byte){
 	
 }

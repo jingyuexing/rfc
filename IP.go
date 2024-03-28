@@ -19,6 +19,8 @@ type IP struct {
 
 func (ip IP) ToBytes() []byte{
 	mask4 := (1 << 4) - 1
+	mask3 := (1 << 3) - 1
+	mask13 := (1 << 13) - 1
 	result := make([]byte,0)
 	var cache uint32
 	cache = cache | uint32(ip.Version)
@@ -28,8 +30,7 @@ func (ip IP) ToBytes() []byte{
 	result = Fill(result,uint(cache))
 	cache = 0
 	result = Fill(result,uint(ip.Identification))
-	result = Fill(result,uint(ip.Flag))
-	result = Fill(result,uint(ip.Offset))
+	result = Fill(result,uint(ip.Flag & uint8(mask3)) << 13 | uint(ip.Offset & uint16(mask13)))
 	result = Fill(result,uint(ip.Time2Live))
 	result = Fill(result,uint(ip.Protocol))
 	result = Fill(result,uint(ip.Checksum))
@@ -40,6 +41,10 @@ func (ip IP) ToBytes() []byte{
 	return result
 }
 
-func (ip IP) SetData(data []byte){
-	ip.payload = data
+func (ip IP) SetData(data ...byte){
+	ip.payload = append(ip.payload, data...)
+}
+
+func (ip IP) Clear(){
+	ip.payload = []byte{}
 }

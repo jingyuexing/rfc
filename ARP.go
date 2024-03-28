@@ -53,6 +53,6 @@ func (arp ARP) ToBytes() []byte{
 	return nil
 }
 
-func (arp ARP) SetData(data []byte){
+func (arp ARP) SetData(data ...byte){
 	
 }

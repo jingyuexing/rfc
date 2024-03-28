@@ -8,6 +8,6 @@ func (dns DNS) ToBytes() []byte{
 	return nil
 }
 
-func (dns DNS) SetData(data []byte){
+func (dns DNS) SetData(data ...byte){
 	
 }

@@ -18,6 +18,6 @@ func (udp UDP) ToBytes() []byte{
 	return result
 }
 
-func (udp UDP) SetData(data []byte){
+func (udp UDP) SetData(data ...byte){
 	udp.payload = data
 }
