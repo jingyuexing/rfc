@@ -6,6 +6,10 @@ import (
 	"strings"
 )
 
+type UInteger interface {
+	~uint64 | ~uint32 | ~uint16 | ~uint8
+}
+
 const (
 	hextable = "0123456789abcdef"
 )
@@ -20,6 +24,19 @@ func (b Buffer) Length() int{
 	return len(b)
 }
 
+func Reverse[T any](data []T) []T {
+	begin := 0
+	end := len(data) - 1
+	for begin < end {
+		cache := data[begin]
+		data[begin] = data[end]
+		data[end] = cache
+		begin++;
+		end--;
+	}
+	return data
+}
+
 func (b Buffer) String() string {
 	str := make([]byte,b.Length() << 1)
 	j := 0
@@ -29,6 +46,13 @@ func (b Buffer) String() string {
 		j += 2
 	}
 	return string(str)
+}
+
+func (b Buffer) LoadBytes(data ...byte) Buffer {
+	for _,item := range data {
+		b = append(b, item)
+	}
+	return b;
 }
 
 func (b Buffer) Load(data string) Buffer{
@@ -56,7 +80,7 @@ func RandBuffer(length int) []byte {
 			i++
 		}
 	}
-	return result
+	return Reverse(result)
 }
 
 
@@ -73,5 +97,6 @@ func Fill(target []byte,val uint) []byte {
 		target = append(target,byte(c))
 		val = val >> 8
 	}
-	return target
+	return Reverse(target)
 }
+
